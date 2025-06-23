@@ -1,0 +1,202 @@
+doctype html
+html
+  head
+    title Weekly Summary
+    style.
+      p {
+        margin: 0;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        line-height: .8;
+      }
+
+      .header p {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 10px 0 20px;
+      }
+
+      .header span {
+        font-size: 14px;
+        font-weight: 500;
+        color:rgb(0, 0, 0);
+      }
+
+      .logo {
+        width: 150px;
+      }
+
+      body {
+        font-family: system-ui, sans-serif;
+        color: #333;
+        background-color: #fff;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+
+      th, td {
+        border: 1px solid #ccc;
+        padding: 4px;
+        text-align: center;
+        font-size: 10px;
+      }
+
+      th:first-child, td:first-child {
+        text-align: left;
+      }
+
+      th[colspan] {
+        background-color: #f0f0f0;
+        text-align: center;
+        font-size: 10px;
+      }
+
+      .employee-name {
+        font-weight: bold;
+        font-size: 10px;
+        display: block;
+      }
+
+      .employee-meta {
+        color: #706768;
+        font-weight: 500;
+        font-size: 10px;
+        display: block;
+      }
+
+      .week-label {
+        font-weight: bold;
+        color: #555;
+      }
+
+      .total {
+        font-weight: bold;
+        color: #555;
+      }
+
+      .total_row {
+        background-color: #f0f0f0;
+        font-weight: bold;
+      }
+
+  body
+    .header
+      - const company = details || []
+      - var companyname = company.companyName
+      - var companyaddress = `${company.companyAddress.no} ${company.companyAddress.street}`
+      - var companycountry = `${company.companyAddress.country}`
+      - var companyLogo = company.companyLogo 
+      p="Attendace Detailed Award Report"
+        br
+        br
+        span= companyname
+        br
+        - const firstWeek = Object.keys(details.summary[0].logs.reduce((acc, log) => (acc[log.week] = true, acc), {}))[0]
+        - const lastWeek = Object.keys(details.summary[0].logs.reduce((acc, log) => (acc[log.week] = true, acc), {})).slice(-1)[0]
+        - const formatDate = d => {
+          -  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+          -  const date = new Date(d)
+          -  const day = date.getDate()
+          -  const suffix = (day % 10 === 1 && day !== 11) ? 'st' : (day % 10 === 2 && day !== 12) ? 'nd' : (day % 10 === 3 && day !== 13) ? 'rd' : 'th'
+          -  return `${day}${suffix} ${months[date.getMonth()]} ${date.getFullYear()}`
+        -  }
+        - const periodText = `For the period of ${formatDate(firstWeek.split(' to ')[0])} to ${formatDate(lastWeek.split(' to ')[1])}`
+        span= periodText
+
+      img.logo(src=companyLogo alt="company-image")
+
+    - const weekdays = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+    - const categoryDisplayMap = {}
+    - categoryDisplayMap["ordinary_hours"] = "Ordinary Hours"
+    - categoryDisplayMap["saturday"] = "Saturday"
+    - categoryDisplayMap["sunday"] = "Sunday"
+    - categoryDisplayMap["public_holiday"] = "Public Holiday"
+    - categoryDisplayMap["sunday_overtime"] = "Sunday - Overtime"
+    - categoryDisplayMap["overtime_first_2_hours"] = "Overtime (First 2 hours)"
+    - categoryDisplayMap["overtime_after_2_hours"] = "Overtime (After 2 hours)"
+    - categoryDisplayMap["public_holiday_overtime"] = "Public Holiday - Overtime"
+
+
+    // Map category keys to total keys in the JSON
+    - const totalKeyMap = {"ordinary_hours": "total_ordinary_hours","saturday": "total_saturday","sunday": "total_sunday","public_holiday": "total_public_holiday","sunday_overtime": "total_sunday_overtime","overtime_first_2_hours": "total_overtime_first_2_hours","overtime_after_2_hours": "total_overtime_after_2_hours","public_holiday_overtime": "total_public_holiday_overtime"}
+
+
+    each employee in details.summary
+      - let flatDays = []
+      - let allDates = []
+      - for (let log of employee.logs) {
+        - for (let category in log.daily_log) {
+          - for (let entry of log.daily_log[category]) {
+            - let date = new Date(entry.date)
+            - flatDays.push({ category: category, date: entry.date, weekday: weekdays[new Date(entry.date).getDay()], label: weekdays[new Date(entry.date).getDay()] + ' ' + new Date(entry.date).getDate(), amount: entry.amount })
+            - if (!allDates.includes(entry.date)) allDates.push(entry.date)}}}
+
+      - allDates.sort((a, b) => new Date(a) - new Date(b))
+
+      // Group allDates by week
+      - let weekGroups = {}
+      - for (let log of employee.logs) {
+        - let weekLabel = log.week // e.g. "2025-03-31 to 2025-04-06"
+        - if (!weekGroups[weekLabel]) weekGroups[weekLabel] = []
+        - // Collect all dates of that week from daily_log
+        - for (let category in log.daily_log) {
+            - for (let entry of log.daily_log[category]) {
+              - if (!weekGroups[weekLabel].includes(entry.date)) {
+                - weekGroups[weekLabel].push(entry.date)
+              - }
+            - }
+        - }
+      - }
+      - Object.keys(weekGroups).forEach(wk => {
+        - let [start, end] = wk.split(' to ').map(d => new Date(d))
+        - let dates = []
+        - for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
+          - dates.push(new Date(dt).toISOString().slice(0,10))
+        - }
+        - weekGroups[wk] = dates
+      - })
+
+
+
+      table
+        // Header row for week labels
+        tr
+          th Name
+          each weekLabel, i in Object.keys(weekGroups)
+            th(colspan=weekGroups[weekLabel].length)= `Week ${i+1}`
+          th.total_row Total
+
+        // Sub-header row for day labels
+        tr
+          td
+            strong.employee-name= employee.employee_name
+            span.employee-meta= `${employee.role} | ${employee.department}`
+          each dates in Object.values(weekGroups)
+            each dateStr in dates
+              - let date = new Date(dateStr)
+              td
+                | #{weekdays[date.getDay()]}
+                br
+                | #{date.getDate()}
+
+          td.total_row
+
+        // Data rows for each category
+        each category in Object.keys(categoryDisplayMap)
+          tr
+            td= categoryDisplayMap[category]
+            each dates in Object.values(weekGroups)
+              each dateStr in dates
+                - let match = flatDays.find(e => e.category === category && e.date === dateStr)
+                - let value = match ? parseFloat(match.amount) : 0.0
+                td= value.toFixed(2)
+            - let totalValue = employee[totalKeyMap[category]] || "0.00"
+            td.total.total_row= parseFloat(totalValue).toFixed(2)

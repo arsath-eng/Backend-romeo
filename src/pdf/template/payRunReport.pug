@@ -1,0 +1,490 @@
+doctype html
+html
+  head
+    style.
+      p {
+        margin: 0;
+      }
+
+      body {
+        font-family: system-ui, sans-serif;
+        color: #333;
+        padding: 20px;
+        background-color: #fff;
+      }
+
+
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        line-height: .8;
+      }
+
+      .header p {
+        font-size: 16px;
+        font-weight: 700;
+        margin: 10px 0 20px;
+      }
+
+      .header span {
+        font-size: 12px;
+        font-weight: 400;
+      }
+
+      .logo {
+        width: 150px;
+      }
+
+      .subject {
+        margin-top: 15px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .subject-date {
+        font-size: 12px;
+        font-weight: 400;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        margin-top: 20px;
+      }
+
+      th.left,
+      td.left {
+        text-align: left;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 5px;
+        text-align: right;
+        font-size: 12px;
+      }
+
+      th {
+        background-color: #f2f2f2;
+        color: #333333f1;
+      }
+
+      tr.table-total {
+        background-color: #f2f2f280;
+      }
+
+      tr.table-total.color {
+        background-color: #8e66e525;
+      }
+
+      .each-table {
+        border-top: 1px solid #ddd;
+        margin: 20px 0 30px;
+      }
+
+      .each-table > p {
+        margin-top: 20px;
+      }
+
+      .no-border {
+        border: none;
+      }
+
+      .info {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+
+      }
+
+      .info-right-bottom {
+        text-align: center;
+        border: 1px solid #ddd;
+        padding: 20px 30px;
+        margin-top: 15px;
+      }
+
+      .info-right-bottom .subject {
+        margin: 0;
+        color: #8f66e5;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .info-right-bottom .subject-date {
+        font-size: 14px;
+        font-weight: 500;
+        color: #706768;
+      }
+
+      .pay-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        /* background-color: #8e66e525;
+        border-top: 2px solid #8e66e5;
+        border-bottom: 2px solid #8e66e5; */
+
+        background-color: #f2f2f280;
+        border-top: 2px solid #ddd;
+        border-bottom: 2px solid #ddd;
+
+        padding: 5px 20px;
+        margin-top: 20px;
+
+      }
+
+      .pay-bar .subject {
+        font-size: 12px;
+        font-weight: 500;
+        color: #706768;
+        margin: 0;
+      }
+
+      .pay-bar .subject-date {
+        /* color: #8f66e5; */
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      /* .pay-summary {
+        margin-bottom: 20px;
+      } */
+
+
+      /* .net-pay {
+        font-size: 20px;
+        color: #4CAF50;
+        text-align: right;
+      }
+
+      .amount {
+        font-size: 24px;
+      } */
+
+      .page-break {
+        page-break-before: always;
+      }
+
+      .page-padding {
+        padding-top: 40px;
+      }
+
+
+  body
+    - const array = details || []
+
+    each item,index in array
+      - const employeeAddressLineOne = [item.employeeAddress.no, item.employeeAddress.street].filter(Boolean).join(', ')
+      - const employeeAddressLineTwo = [item.employeeAddress.city, item.employeeAddress.state].filter(Boolean).join(', ')
+      - const employeeAddressLineThree = [item.employeeAddress.country, item.employeeAddress.zip].filter(Boolean).join(', ')
+      - const companyAddressLineOne = [item.companyAddress.street].filter(Boolean).join(', ')
+      - const companyAddressLineTwo = [item.companyAddress.city, item.companyAddress.state].filter(Boolean).join(', ')
+      - const companyAddressLineThree = [item.companyAddress.zipCode].filter(Boolean).join(', ')
+
+      if index !== 0
+        .page-break
+        .page-padding
+      
+      .header
+        p= item.companyName
+          br
+          span= item.companyAddress.country
+        img.logo(src=item.companyLogo alt="company-image")
+
+      .info
+        .info-left
+          p.subject=item.employeeName
+          p.subject-date=employeeAddressLineOne
+            br
+            |#{employeeAddressLineTwo}
+            br
+            |#{employeeAddressLineThree}
+
+        .info-right
+          .info-right-top
+            p.subject PAID BY
+            p.subject-date= item.companyName
+              br
+              |#{companyAddressLineOne}
+              br
+              |#{companyAddressLineTwo}
+              br
+              |#{companyAddressLineThree}
+
+          //if item.anualSalary.show === true
+          //  .info-right-bottom
+          //    p.subject-date Annual Salary
+          //    p.subject= `${item.anualSalary.currency}${item.anualSalary.amount}`
+          //    p.subject-date Pay Frequency: Fortnightly
+
+      .pay-bar
+        .pay-bar-item
+          p.subject Pay Period:
+            p.subject-date= item.payPeriod
+        .pay-bar-item
+          p.subject Payment Date:
+            p.subject-date=item.payDate
+        .pay-bar-item
+          p.subject Total Earnings:
+            p.subject-date= `${item.currency}${item.earnings}`
+        .pay-bar-item
+          p.subject Net Pay:
+            p.subject-date= `${item.currency}${item.netPay}`
+
+      table.details-table
+        if item.earningLines.length > 0
+          thead
+            tr.section-heading
+              th.left SALARY & WAGES RATE
+              th Rate
+              th Units
+              th THIS PAY
+              th YTD
+          tbody
+            each earning in item.earningLines
+              tr
+                td.left= earning.name
+                td= `${item.currency}${earning.ratePerUnit}`
+                td= earning.numberOfUnits === "" ? "-" : `${earning.numberOfUnits}`
+                td= `${item.currency}${earning.amount}`
+                td= `${item.currency}${earning.amountYTD}`
+            if item.otherEarningsYTD !== 0    
+              tr
+                td.left Other Earnings YTD
+                td
+                td
+                td
+                td= `${item.currency}${item.otherEarningsYTD }`
+            tr.table-total.color
+              td Total
+              td
+              td
+              td= `${item.currency}${item.earnings}`
+              td= `${item.currency}${item.earningsYTD }`
+
+        if item.deductionLines.length > 0
+          thead
+            tr.section-heading
+              th.left DEDUCTIONS
+              th
+              th
+              th
+              th
+          tbody
+            each deduction in item.deductionLines
+              tr
+                td.left= deduction.name
+                td
+                td
+                td= `${item.currency}${deduction.amount}`
+                td= `${item.currency}${deduction.amountYTD}`
+            if item.otherDeductionsYTD !== 0    
+              tr
+                td.left Other Deductions YTD
+                td
+                td
+                td
+                td= `${item.currency}${item.otherDeductionsYTD }`    
+            tr.table-total.color
+              td Total
+              td
+              td
+              td= `${item.currency}${item.deductions}`
+              td= `${item.currency}${item.deductionsYTD}`
+
+        if item.taxLines.length > 0
+          thead
+            tr.section-heading
+              th.left TAX
+              th
+              th
+              th
+              th
+          tbody
+            each tax in item.taxLines
+              if tax.name !== 'GST on Expenses'
+                tr
+                  td.left= tax.name
+                  td
+                  td
+                  td= `${item.currency}${tax.amount}`
+                  td= tax.amountYTD ? `${item.currency}${tax.amountYTD}` : "-"
+            if item.otherTaxesYTD !== 0    
+              tr
+                td.left Other Taxes YTD
+                td
+                td
+                td
+                td= `${item.currency}${item.otherTaxesYTD}`          
+            tr.table-total.color
+              td Total
+              td
+              td
+              td= `${item.currency}${item.taxes}`
+              td= `${item.currency}${item.taxesYTD}`
+
+        if item.reimbursementsLines.length > 0
+          thead
+            tr.section-heading
+              th.left REIMBURSEMENTS
+              th
+              th
+              th
+              th
+          tbody
+            each reimbursement in item.reimbursementsLines
+              tr
+                td.left= reimbursement.name
+                td
+                td
+                td= `${item.currency}${reimbursement.amount}`
+                td= `${item.currency}${reimbursement.amountYTD}`
+            if item.otherReimbursementsYTD !== 0    
+              tr
+                td.left Other Reimbursements YTD
+                td
+                td
+                td
+                td= `${item.currency}${item.otherReimbursementsYTD }`       
+            tr.table-total.color
+              td Total
+              td
+              td
+              td= `${item.currency}${item.reimbursements}`
+              td= `${item.currency}${item.reimbursementsYTD}`
+
+        if item.epfEtfLines.length > 0
+          thead
+            tr.section-heading
+              th.left EPF EMPLOYEE
+              th.left Member Id
+              th
+              th 
+              th 
+          tbody
+            each epfEtf in item.epfEtfLines.filter(line => line.type === "EPF_EMPLOYEE")
+              tr
+                td.left= epfEtf.name
+                td.left= epfEtf.memberId
+                td
+                td= `${item.currency}${epfEtf.amount}`
+                td= epfEtf.amountYTD ? `${item.currency}${epfEtf.amountYTD}` : "-"
+            tr.table-total.color
+              td Total
+              td
+              td
+              td= `${item.currency}${item.epfEmployee}`
+              td= `-`
+
+      if item.superannuationLines.length > 0
+          table.details-table
+              thead
+                  tr.section-heading
+                    th.left SUPERANNUATION
+                    th Type
+                    th Rate
+                    th THIS PAY
+                    th YTD
+              tbody
+                  each superanu in item.superannuationLines
+                      tr
+                        td.left= superanu.name
+                        td
+                        td
+                        td= `${item.currency}${superanu.amount}`
+                        td= `${item.currency}${superanu.amountYTD}`
+                  if item.otherSuperannuationsYTD && item.otherSuperannuationsYTD !== 0
+                      tr
+                        td.left Other Superannuations YTD
+                        td
+                        td
+                        td
+                        td= `${item.currency}${item.otherSuperannuationsYTD}`
+                  tr.table-total.color
+                      td Total
+                      td
+                      td
+                      td= `${item.currency}${item.superannuations}`
+                      td= `${item.currency}${item.superannuationsYTD}`
+
+      if item.leaveLines.length > 0
+          table.details-table
+              thead
+                  tr.section-heading
+                    th.left Leave
+                    th Type
+                    th Rate
+                    th THIS PAY
+                    th YTD
+              tbody
+                  each leave in item.leaveLines
+                      tr
+                        td.left= leave.name
+                        td
+                        td
+                        td= `${leave.amount}`
+                        td
+                  tr.table-total.color
+                    td Total
+                    td
+                    td
+                    td= `${item.leaves}`
+                    td
+
+      .pay-bar
+        .pay-bar-item
+          p.subject 
+            p.subject-date
+        .pay-bar-item
+          p.subject
+            p.subject-date
+        .pay-bar-item
+          p.subject
+            p.subject-date
+        .pay-bar-item
+          p.subject Net Pay:
+            p.subject-date= `${item.currency}${item.netPay}`  
+
+
+      if item.epfEtfLines.length > 0
+        table.details-table
+          thead
+            tr.section-heading
+              th.left EPF EMPLOYEE
+              th.left Member Id
+              th THIS PAY
+          tbody
+            each epfEtf in item.epfEtfLines.filter(line => line.type === "EPF_EMPLOYEER")
+              tr
+                td.left= epfEtf.name
+                td.left= epfEtf.memberId
+                td= `${item.currency}${epfEtf.amount}`
+                          
+            tr.table-total.color
+                td Total
+                td
+                td= `${item.currency}${item.epfEmployeer}`
+          
+          thead
+            tr.section-heading
+              th.left ETF
+              th
+              th     
+          tbody
+            each epfEtf in item.epfEtfLines.filter(line => line.type === "ETF")
+              tr
+                td.left= epfEtf.name
+                td.left= epfEtf.memberId
+                td= `${item.currency}${epfEtf.amount}`
+                        
+            tr.table-total.color
+                td Total
+                td
+                td= `${item.currency}${item.etf}`

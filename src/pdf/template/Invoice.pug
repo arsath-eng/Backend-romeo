@@ -1,0 +1,14 @@
+doctype html
+html
+  head
+    title My PDF Document
+  body
+    h1 My PDF Content
+    p This is a sample PDF generated using Pug and Puppeteer in NestJS.
+
+    // Example test data
+    if testData
+      h2 Test Data
+      ul
+        each item in testData
+          li= item

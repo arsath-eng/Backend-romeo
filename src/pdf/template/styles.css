@@ -1,0 +1,173 @@
+p {
+    margin: 0;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+    color: #333;
+    padding: 20px;
+    background-color: #f7f7f7;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px 35px;
+    border: 1px solid #e1e1e1;
+    margin: auto;
+    width: 210mm;
+    height: 100%;
+    min-height: 290mm;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    line-height: .8;
+}
+
+.header p {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 10px 0 20px;
+}
+
+.header span {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.logo {
+    width: 200px;
+}
+
+.subject {
+    margin-top: 15px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.subject-date {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+th.left,
+td.left {
+    text-align: left;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: right;
+}
+
+th {
+    background-color: #f2f2f2;
+    color: #333333f1;
+}
+
+tr.table-total {
+    background-color: #f2f2f280;
+}
+
+tr.table-total.color {
+    background-color: #8e66e525;
+}
+
+.each-table {
+    border-top: 1px solid #ddd;
+    margin: 20px 0 30px;
+}
+
+.each-table>p {
+    margin-top: 20px;
+}
+
+.no-border {
+    border: none;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+
+}
+
+.info-right-bottom {
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 20px 30px;
+    margin-top: 15px;
+}
+
+.info-right-bottom .subject {
+    margin: 0;
+    color: #8f66e5;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.info-right-bottom .subject-date {
+    font-size: 14px;
+    font-weight: 500;
+    color: #706768;
+}
+
+.pay-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    /* background-color: #8e66e525;
+    border-top: 2px solid #8e66e5;
+    border-bottom: 2px solid #8e66e5; */
+
+    background-color: #f2f2f280;
+    border-top: 2px solid #ddd;
+    border-bottom: 2px solid #ddd;
+
+    padding: 10px 20px;
+    margin-top: 20px;
+
+}
+
+.pay-bar .subject {
+    font-size: 14px;
+    font-weight: 500;
+    color: #706768;
+    margin: 0;
+}
+
+.pay-bar .subject-date {
+    /* color: #8f66e5; */
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* .pay-summary {
+    margin-bottom: 20px;
+} */
+
+
+
+/* .net-pay {
+    font-size: 20px;
+    color: #4CAF50;
+    text-align: right;
+}
+
+.amount {
+    font-size: 24px;
+} */

@@ -1,0 +1,258 @@
+doctype html
+html
+  head
+    style.
+      p {
+        margin: 0;
+      }
+
+      body {
+        font-family: system-ui, sans-serif;
+        color: #333;
+        padding: 20px;
+        background-color: #fff;
+      }
+
+      
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        line-height: .8;
+      }
+
+      .header p {
+        font-size: 14px;
+        font-weight: 700;
+        margin: 10px 0 20px;
+      }
+
+      .header span {
+        font-size: 12px;
+        font-weight: 400;
+      }
+
+      .logo {
+        width: 150px;
+      }
+
+      .subject {
+        margin-top: 15px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .subject-date {
+        font-size: 12px;
+        font-weight: 400;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        margin-top: 20px;
+      }
+
+      th.left,
+      td.left {
+        text-align: left;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 5px;
+        text-align: right;
+        font-size: 12px;
+      }
+
+      th {
+        background-color: #f2f2f2;
+        color: #333333f1;
+      }
+
+      tr.table-total {
+        background-color: #f2f2f280;
+      }
+
+      tr.table-total.color {
+        background-color: #8e66e525;
+      }
+
+      .each-table {
+        border-top: 1px solid #ddd;
+        margin: 20px 0 30px;
+      }
+
+      .each-table > p {
+        margin-top: 20px;
+      }
+
+      .no-border {
+        border: none;
+      }
+
+      .info {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+
+      }
+
+      .info-right-bottom {
+        text-align: center;
+        border: 1px solid #ddd;
+        padding: 20px 30px;
+        margin-top: 15px;
+      }
+
+      .info-right-bottom .subject {
+        margin: 0;
+        color: #8f66e5;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .info-right-bottom .subject-date {
+        font-size: 14px;
+        font-weight: 500;
+        color: #706768;
+      }
+
+      .pay-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        /* background-color: #8e66e525;
+        border-top: 2px solid #8e66e5;
+        border-bottom: 2px solid #8e66e5; */
+
+        background-color: #f2f2f280;
+        border-top: 2px solid #ddd;
+        border-bottom: 2px solid #ddd;
+
+        padding: 5px 20px;
+        margin-top: 20px;
+
+      }
+
+      .pay-bar .subject {
+        font-size: 12px;
+        font-weight: 500;
+        color: #706768;
+        margin: 0;
+      }
+
+      .pay-bar .subject-date {
+        /* color: #8f66e5; */
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .info_pay {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      /* .pay-summary {
+        margin-bottom: 20px;
+      } */
+
+
+      /* .net-pay {
+        font-size: 20px;
+        color: #4CAF50;
+        text-align: right;
+      }
+
+      .amount {
+        font-size: 24px;
+      } */
+  body
+    
+    .header
+      - const company = details || []
+      - var companyname = company[0].companyName
+      - var companyaddress = `${company[0].companyAddress.no} ${company[0].companyAddress.street}`
+      - var companycountry = `${company[0].companyAddress.country}`
+      - var companyLogo = company[0].companyLogo 
+      p=companyname
+        br
+        span=companyaddress
+        br
+        span=companycountry
+      img.logo(src=companyLogo alt="company-image")
+
+    p.subject Payroll Employee Summary
+    div.info_pay
+      p.subject-date= `${company[0].payPeriod} | Ending Date: ${company[0].payDate}`
+      p.subject-date= `Payment Date: ${company[0].payDate}` 
+
+    table.details-table
+      thead
+        tr.section-heading
+          th.left Employee
+          th Earnings
+          th Deductions
+          th Reimburse
+          th Tax
+          if (company[0].companyAddress.country === 'Sri Lanka')
+            th EPF (Employee)
+          th Net Pay
+          if (company[0].companyAddress.country === 'Australia')
+            th Super
+          if (company[0].companyAddress.country === 'Sri Lanka')
+            th EPF (Employer)
+            th ETF
+      tbody
+        - const payrollData = company
+        each emp in payrollData
+          tr
+            td.left= emp.employeeName
+            td= emp.earnings ? emp.earnings : '-'
+            td= emp.deductions ? emp.deductions : '-'
+            td= emp.reimbursements ? emp.reimbursements : '-'
+            td= emp.taxes ? emp.taxes : '-'
+            if (company[0].companyAddress.country === 'Sri Lanka')
+              td= emp.epfEmployee ? emp.epfEmployee : '-'
+            td= emp.netPay ? emp.netPay : '-'
+            if (company[0].companyAddress.country === 'Australia')
+              td= emp.superannuations ? emp.superannuations : '-'
+            if (company[0].companyAddress.country === 'Sri Lanka')
+              td= emp.epfEmployeer ? emp.epfEmployeer : '-'
+              td= emp.etf ? emp.etf : '-'    
+            
+        tr.table-total
+          td
+          
+          - var earningsTotal = payrollData.reduce((acc, emp) => acc + (parseFloat(emp.earnings) || 0), 0)
+          - var deductionsTotal = payrollData.reduce((acc, emp) => acc + (parseFloat(emp.deductions) || 0), 0)
+          - var reimburseTotal = payrollData.reduce((acc, emp) => acc + (parseFloat(emp.reimbursements) || 0), 0)
+          - var taxTotal = payrollData.reduce((acc, emp) => acc + (parseFloat(emp.taxes) || 0), 0)
+          - var netPayTotal = payrollData.reduce((acc, emp) => acc + (parseFloat(emp.netPay) || 0), 0)
+          - var superTotal = payrollData.reduce((acc, emp) => acc + (parseFloat(emp.superannuations) || 0), 0)
+          - var epfEmployee = payrollData.reduce((acc, emp) => acc + (parseFloat(emp.epfEmployee) || 0), 0)
+          - var epfEmployer = payrollData.reduce((acc, emp) => acc + (parseFloat(emp.epfEmployeer) || 0), 0)
+          - var etf = payrollData.reduce((acc, emp) => acc + (parseFloat(emp.etf) || 0), 0)
+
+          
+          td= earningsTotal > 0 ? earningsTotal.toFixed(2) : '-'
+          td= deductionsTotal > 0 ? deductionsTotal.toFixed(2) : '-'
+          td= reimburseTotal > 0 ? reimburseTotal.toFixed(2) : '-'
+          td= taxTotal > 0 ? taxTotal.toFixed(2) : '-'
+          if (company[0].companyAddress.country === 'Sri Lanka')
+            td= epfEmployee > 0 ? epfEmployee.toFixed(2) : '-'
+          td= netPayTotal > 0 ? netPayTotal.toFixed(2) : '-'
+          if (company[0].companyAddress.country === 'Australia')
+            td= superTotal > 0 ? superTotal.toFixed(2) : '-'
+          if (company[0].companyAddress.country === 'Sri Lanka')
+            td= epfEmployer > 0 ? epfEmployer.toFixed(2) : '-'
+            td= etf > 0 ? etf.toFixed(2) : '-'
+          
+
+
+
